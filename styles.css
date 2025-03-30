@@ -1,0 +1,218 @@
+/* styles.css - Modificado para agregar estilos de prioridad, subtareas y tareas completadas */
+
+@font-face {
+    font-family: "San Francisco Display Ultralight";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.woff2) format("woff2");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "San Francisco Display Ultralight", "San Francisco Display Thin";
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+}
+
+h1 {
+    color: #333;
+    font-family: "Calibri Light";
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo para tareas completadas */
+.task-completed {
+    background-color: #d3d3d3 !important; /* Gris */
+    text-decoration: line-through;
+    color: #666;
+}
+
+/* Colores de prioridad */
+.alta {
+    background-color: #cb4154 !important; /* Rojo */
+    color: white;
+}
+
+.media {
+    background-color: #ffb833 !important; /* Naranja */
+    color: white;
+}
+
+.baja {
+    background-color: #4ea93b !important; /* Verde */
+    color: white;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-table th,
+.task-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.task-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.task-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+button.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Estilos para subtareas */
+.subtasks {
+    margin-top: 10px;
+    padding-left: 20px;
+    font-size: 0.9em;
+    color: #555;
+    border-left: 3px solid #ccc;
+    padding-left: 10px;
+}
+
+.subtask-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+    padding: 5px;
+    background: #f4f4f4;
+    border-radius: 4px;
+}
+
+.subtask-item button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.subtask-item button:hover {
+    background-color: #c82333;
+}
+
+.subtask-list,
+#calendar-tasks ul {
+    list-style-type: none; /* Elimina los bullets */
+    padding-left: 0; /* Reinicia el padding */
+}
+
+.subtask-list li,
+#calendar-tasks li {
+    padding-left: 15px; /* Espacio para alinear el texto */
+    position: relative;
+}
+
+/* Agregar un pseudo-elemento para bullets personalizados */
+.subtask-list li::before,
+#calendar-tasks li::before {
+    content: "•";
+    position: absolute;
+    left: 2px;
+    color: #666;
+}
+
+/* Estilos para el icono de notificaciones */
+.notification-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.notifications {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: none;
+    max-width: 250px;
+}
+
+.notifications.active {
+    display: block;
+}
+
+.notification {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.9em;
+}
+
+.notification:last-child {
+    border-bottom: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#notifications {
+    position: absolute;
+    right: 10px;
+    top: 40px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenedor del calendario */
+#calendar {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+/* Estilos para la lista de tareas en el calendario */
+#calendar-tasks ul {
+    padding-left: 0px;
+    list-style-position: inside; /* Bullets alineados con el texto */
+}
+
+#calendar-tasks li {
+    margin: 8px 0;
+    padding-left: 15px;
+}

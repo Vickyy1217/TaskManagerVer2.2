@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>TaskFlow</h1>
+        
+        <div class="top-controls">
+            <!-- Icono de notificaciones -->
+            <button class="bell-icon" id="bell-icon">🔔</button>
+            <div id="notifications" class="hidden"></div>
+
+            <!-- Botón de calendario -->
+            <button class="calendar-btn" id="calendar-btn">📅</button>
+        </div>
+
+        <!-- Calendario -->
+        <div id="calendar" class="hidden">
+            <input type="date" id="calendar-picker">
+            <div id="calendar-tasks"></div>
+        </div>
+        
+        <!-- Formulario para agregar nuevas tareas -->
+        <form id="task-form">
+            <input type="text" id="task-name" placeholder="Nombre de la tarea" required>
+            <input type="date" id="due-date" required>
+            <input type="text" id="project" placeholder="Categoría" required>
+            <select id="priority" required>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+            </select>
+            <button type="submit">--Añadir--</button>
+        </form>
+
+        <!-- Tabla para mostrar las tareas agregadas -->
+        <table class="task-table">
+            <thead>
+                <tr>
+                    <th>Completado</th>
+                    <th>Nombre</th>
+                    <th>Fecha Límite</th>
+                    <th>Categoría</th>
+                    <th>Prioridad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="task-list"></tbody>
+        </table>
+    </div>
+    <script>
+        // Polyfill para showPicker()
+        if (!HTMLInputElement.prototype.showPicker) {
+            HTMLInputElement.prototype.showPicker = function() {
+                this.type = 'date';
+                this.focus();
+             };
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
