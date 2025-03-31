@@ -17,6 +17,36 @@
 
             <!-- Botón de calendario -->
             <button class="calendar-btn" id="calendar-btn">📅</button>
+
+            <!-- Botón de tareas completadas -->
+            <button class="check-btn" id="completed-tasks-btn">✅</button>
+        
+            <!-- Botón de filtro -->
+            <button class="filter-btn" id="filter-btn">🗂️</button>
+        </div>
+
+        <!-- Contenedor de filtros (añade esto cerca de los otros controles) -->
+        <div id="filter-container" class="hidden">
+            <div class="filter-group">
+                <label>Prioridad:</label>
+                <select id="filter-priority">
+                    <option value="all">Todas</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Media</option>
+                    <option value="baja">Baja</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Categoría:</label>
+                <select id="filter-category">
+                    <option value="all">Todas</option>
+                    <!-- Opciones dinámicas se llenarán con JS -->
+                </select>
+            </div>
+
+            <button id="apply-filter">Aplicar</button>
+            <button id="reset-filter">Restablecer</button>
         </div>
 
         <!-- Calendario -->
@@ -27,10 +57,10 @@
         
         <!-- Formulario para agregar nuevas tareas -->
         <form id="task-form">
-            <input type="text" id="task-name" placeholder="Nombre de la tarea" required>
-            <input type="date" id="due-date" required>
-            <input type="text" id="project" placeholder="Categoría" required>
-            <select id="priority" required>
+            <input type="text" id="task-name" name="task-name" placeholder="Nombre de la tarea" required>
+            <input type="date" id="due-date" name="due-date" required>
+            <input type="text" id="project" name="project" placeholder="Categoría" required>
+            <select id="priority" name="priority" required>
                 <option value="baja">Baja</option>
                 <option value="media">Media</option>
                 <option value="alta">Alta</option>
@@ -53,6 +83,15 @@
             <tbody id="task-list"></tbody>
         </table>
     </div>
+    
+    <!-- Nueva sección para tareas completadas (al final del container) -->
+    <div id="completed-tasks-container" class="hidden">
+        <button id="back-to-main" class="back-btn">← Volver</button>
+        <h2>Tareas Completadas</h2>
+        <div id="effectiveness-stats"></div>
+        <div id="completed-tasks-list"></div>
+    </div>
+
     <script>
         // Polyfill para showPicker()
         if (!HTMLInputElement.prototype.showPicker) {

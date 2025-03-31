@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
     checkUpcomingDeadlines();
+    populateCategoryFilter();
 });
 
 document.getElementById('task-form').addEventListener('submit', addTask);
@@ -28,6 +29,29 @@ document.getElementById('calendar-btn').addEventListener('click', () => {
 // Corregir el ID del input (calendar-picker en lugar de calendar)
 document.getElementById('calendar-picker').addEventListener('change', (e) => {
     showTasksForDate(e.target.value);
+});
+
+document.getElementById('filter-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('filter-container').classList.toggle('hidden');
+});
+
+document.getElementById('apply-filter').addEventListener('click', () => {
+    filterTasks();
+    document.getElementById('filter-container').classList.add('hidden');
+});
+
+document.getElementById('reset-filter').addEventListener('click', () => {
+    document.getElementById('filter-priority').value = 'all';
+    document.getElementById('filter-category').value = 'all';
+    refreshTaskList();
+    document.getElementById('filter-container').classList.add('hidden');
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#filter-container') && !e.target.matches('#filter-btn')) {
+        document.getElementById('filter-container').classList.add('hidden');
+    }
 });
 
 function addTask(e) {
@@ -75,14 +99,14 @@ function showTasksForDate(selectedDate) {
 
 // Agregar tarea al DOM
 function addTaskToDOM(task) {
+    if (task.completed) {
+        return;
+    }
+    
     const taskRow = document.createElement('tr');
     taskRow.setAttribute('data-id', task.id);
     taskRow.classList.toggle('completed', task.completed);
     taskRow.classList.add(task.priority); // Aplica color de prioridad
-    
-    if (task.completed) {
-        taskRow.classList.add('task-completed');
-    }
 
     taskRow.innerHTML = `
         <td><input type="checkbox" class="complete-btn" ${task.completed ? 'checked' : ''}></td>
@@ -220,9 +244,6 @@ function checkUpcomingDeadlines() {
     const notifications = document.getElementById('notifications'); // Contenedor de notificaciones
     notifications.innerHTML = ''; // Limpiar notificaciones anteriores
 
-    // console.log("Fecha y hora actual (Ciudad de México):", nowInMexico);
-    // console.log("Fecha y hora en 24 horas (Ciudad de México):", en24HorasMexico);
-
     tasks.forEach(task => {
         // Convertir la fecha de vencimiento de la tarea a la zona horaria de la Ciudad de México
         const taskDueDate = new Date(task.dueDate + 'T00:00:00'); // Asegurar que la hora sea 00:00:00
@@ -286,4 +307,94 @@ function removeSubtask(taskId, subtaskId) {
     });
     saveTasksToLocalStorage(tasks);
     refreshTaskList(); // Recargar la lista de tareas y subtareas en la interfaz
+}
+
+// Nuevo evento para el botón de tareas completadas (agrega esto en el DOMContentLoaded)
+document.getElementById('completed-tasks-btn').addEventListener('click', showCompletedTasks);
+
+// Evento para el botón de volver
+document.getElementById('back-to-main').addEventListener('click', () => {
+    document.getElementById('completed-tasks-container').classList.add('hidden');
+    document.querySelector('.container').classList.remove('hidden');
+});
+
+// Función para mostrar tareas completadas y estadísticas
+function showCompletedTasks() {
+    const container = document.getElementById('completed-tasks-container');
+    const taskList = document.getElementById('completed-tasks-list');
+    const statsContainer = document.getElementById('effectiveness-stats');
+    
+    // Ocultar la vista principal
+    document.querySelector('.container').classList.add('hidden');
+    container.classList.remove('hidden');
+
+    // Obtener y filtrar tareas
+    const allTasks = getTasksFromLocalStorage();
+    const completedTasks = allTasks.filter(task => task.completed);
+    
+    // Mostrar estadísticas
+    const completionRate = Math.round((completedTasks.length / allTasks.length) * 100) || 0;
+    statsContainer.innerHTML = `
+        <h3>📊 Efectividad</h3>
+        <p>Tareas completadas: ${completedTasks.length}/${allTasks.length}</p>
+        <p>Tasa de completado: ${completionRate}%</p>
+    `;
+
+    // Mostrar tareas completadas
+    taskList.innerHTML = '';
+    completedTasks.forEach(task => {
+        const taskDiv = document.createElement('div');
+        taskDiv.className = 'completed-task-item';
+        taskDiv.innerHTML = `
+            <span>${task.taskName}</span>
+            <div>
+                <small>${task.dueDate}</small>
+                <span class="priority-tag ${task.priority}">${task.priority}</span>
+            </div>
+        `;
+        taskList.appendChild(taskDiv);
+    });
+}
+
+// Llenar categorías dinámicamente
+function populateCategoryFilter() {
+    const tasks = getTasksFromLocalStorage();
+    const categories = [...new Set(tasks.map(task => task.project))];
+    const filterCategory = document.getElementById('filter-category');
+    
+    categories.forEach(category => {
+        if (category) { // Evitar valores vacíos
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            filterCategory.appendChild(option);
+        }
+    });
+}
+
+// Función de filtrado
+function filterTasks() {
+    const priority = document.getElementById('filter-priority').value;
+    const category = document.getElementById('filter-category').value;
+    
+    let tasks = getTasksFromLocalStorage().filter(task => !task.completed);
+
+    if (priority !== 'all') {
+        tasks = tasks.filter(task => task.priority === priority);
+    }
+    
+    if (category !== 'all') {
+        tasks = tasks.filter(task => task.project === category);
+    }
+
+    refreshTaskList(tasks); // Modificaremos esta función
+}
+
+// Modificar refreshTaskList para aceptar filtros
+function refreshTaskList(tasks = null) {
+    const taskList = document.getElementById('task-list');
+    taskList.innerHTML = '';
+    
+    const tasksToShow = tasks || getTasksFromLocalStorage();
+    tasksToShow.forEach(task => addTaskToDOM(task));
 }
